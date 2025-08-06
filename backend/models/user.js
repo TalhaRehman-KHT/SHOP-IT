@@ -7,18 +7,30 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please enter user name"],
+<<<<<<< HEAD
     maxLength: [50, "User name cannot exceed 50 characters"], 
+=======
+    maxLength: [50, "User name cannot exceed 50 characters"],
+>>>>>>> 4354a02 (Updated shopit  add clientSide and integrate)
   },
   email: {
     type: String,
     required: [true, "Please enter email"],
     unique: true,
   },
+<<<<<<< HEAD
   
   password: {
     type: String,
     required: [true, "Please enter password"],
     minLength: [6, "Password must be at least 6 characters"], 
+=======
+
+  password: {
+    type: String,
+    required: [true, "Please enter password"],
+    minLength: [6, "Password must be at least 6 characters"],
+>>>>>>> 4354a02 (Updated shopit  add clientSide and integrate)
     select: false,
   },
   avatar: {
@@ -29,7 +41,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "user",
   },
+<<<<<<< HEAD
   resetPasswordToken: String, 
+=======
+  resetPasswordToken: String,
+>>>>>>> 4354a02 (Updated shopit  add clientSide and integrate)
   resetPasswordExpire: Date,
 }, { timestamps: true });
 
