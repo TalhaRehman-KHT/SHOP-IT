@@ -11,6 +11,7 @@ export default function Header() {
     const [logout] = useLogoutMutation(); // Hook to call logout mutation
 
     const { user } = useSelector((state) => state.auth); // Get user from Redux
+    const { cartItems } = useSelector((state) => state.cart);
 
     // Logout handler
     const logouthandler = async () => {
@@ -40,7 +41,7 @@ export default function Header() {
                     {/* Cart */}
                     <Link to="/cart" style={{ textDecoration: 'none' }}>
                         <span id="cart" className="ms-3">Cart</span>
-                        <span className="ms-1" id="cart_count">0</span>
+                        <span className="ms-1" id="cart_count">{cartItems.length}</span>
                     </Link>
 
                     {/* If user is logged in */}

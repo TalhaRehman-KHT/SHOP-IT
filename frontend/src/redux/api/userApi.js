@@ -1,13 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setUser, setIsAuthenticated } from "../featurs/userSlice";
 
-// Define the API
+
+
 export const userApi = createApi({
     reducerPath: "userApi",
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:4000/api/v1",
-        credentials: "include", // Enable cookie sharing
+        credentials: "include", // to send cookies
     }),
+    tagTypes: ["User"], // Declare tag for cache invalidation
     endpoints: (builder) => ({
         // GET /me
         getMe: builder.query({
@@ -25,9 +27,59 @@ export const userApi = createApi({
                     console.error("User fetch failed:", error);
                 }
             },
+            providesTags: ["User"],
         }),
+
+        // PUT /me/update
+        updateProfile: builder.mutation({
+            query: (body) => ({
+                url: "/me/update",
+                method: "PUT",
+                body,
+            }),
+            invalidatesTags: ["User"],
+        }),
+
+        // PUT /me/upload_avatar
+        uploadAvatar: builder.mutation({
+            query: (body) => ({
+                url: "/me/upload_avatar",
+                method: "PUT",
+                body,
+            }),
+            invalidatesTags: ["User"],
+        }),
+
+        // PUT /me/update_password
+        updatePassword: builder.mutation({
+            query: (body) => ({
+                url: "/password/update",
+                method: "PUT",
+                body,
+            }),
+            // invalidatesTags: ["User"],
+        }),
+
+        // PUT /forgotpassword
+        forgotPassword: builder.mutation({
+            query: (body) => ({
+                url: "/password/forgot",
+                method: "POST",
+                body,
+            }),
+            // invalidatesTags: ["User"],
+        }),
+
+        resetPassword: builder.mutation({
+            query: ({ token, ...body }) => ({
+                url: `/password/reset/${token}`,  // <- fix here
+                method: "PUT",
+                body,
+            }),
+        }),
+
     }),
 });
 
-// Hook
-export const { useGetMeQuery } = userApi;
+// Export hooks
+export const { useGetMeQuery, useUpdateProfileMutation, useUploadAvatarMutation, useUpdatePasswordMutation, useForgotPasswordMutation, useResetPasswordMutation } = userApi;

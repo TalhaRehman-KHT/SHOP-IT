@@ -9,13 +9,10 @@ import ApiFilters from "../utils/apiFilters.js";
 export const getAllProducts = catchAsyncError(async (req, res, next) => {
   const reqPerPage = 4;
 
-<<<<<<< HEAD
-=======
   //  console.log("Received query:", req.query);
   console.log("Incoming Query String:", req.query);
 
 
->>>>>>> 4354a02 (Updated shopit  add clientSide and integrate)
   // Step 1: Search + Filter
   const apiFilters = new ApiFilters(Product.find(), req.query)
     .search()
@@ -37,10 +34,7 @@ export const getAllProducts = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     success: true,
     reqPerPage,
-<<<<<<< HEAD
-=======
     resPerPage: reqPerPage,
->>>>>>> 4354a02 (Updated shopit  add clientSide and integrate)
     filterProductsCount,
     products,
   });
@@ -52,12 +46,8 @@ export const getAllProducts = catchAsyncError(async (req, res, next) => {
 
 export const createProduct = catchAsyncError(async (req, res, next) => {
   try {
-<<<<<<< HEAD
-    req.body.user = req.user_id;
-=======
     // req.body.user = req.user_id;
     req.body.user = req.user._id;
->>>>>>> 4354a02 (Updated shopit  add clientSide and integrate)
     const product = await Product.create(req.body);
 
     console.log("New Product Created:", product);
@@ -212,15 +202,9 @@ export const deleteProductReviews = catchAsyncError(async (req, res, next) => {
 
   const numOfReviews = reviews.length;
 
-<<<<<<< HEAD
-  
-  const rating = numOfReviews === 0 
-    ? 0 
-=======
 
   const rating = numOfReviews === 0
     ? 0
->>>>>>> 4354a02 (Updated shopit  add clientSide and integrate)
     : reviews.reduce((acc, item) => acc + item.rating, 0) / numOfReviews;
 
   product.reviews = reviews;

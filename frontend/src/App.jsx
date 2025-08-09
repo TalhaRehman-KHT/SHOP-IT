@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 import Header from './components/layout/Header.jsx';
 import Footer from './components/layout/Footer.jsx';
@@ -8,6 +8,14 @@ import Home from './components/Home.jsx';
 import ProductDetails from './components/products/ProductDetails.jsx';
 import Login from './components/auth/Login.jsx';
 import Register from './components/auth/Register.jsx';
+import Profile from './components/User/Profile.jsx';
+import UpdateUserProfile from './components/User/UpdateUserProfile.jsx';
+import ProtectedRoute from './components/auth/ProtectedRoute.jsx'; // ✅ Fixed import
+import UploadAvatar from './components/User/UploadAvatar.jsx';
+import UpdatePassword from './components/User/UpdatePassword.jsx';
+import ForgotPassword from './components/auth/ForgotPassword.jsx';
+import ResetPassword from './components/auth/ResetPassword.jsx';
+import Cart from './components/Cart/Cart.jsx';
 
 function App() {
   return (
@@ -25,8 +33,49 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
 
+              <Route
+                path="/me/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
 
-              {/* Add other routes here as needed */}
+              <Route
+                path="/me/update_profile"
+                element={
+                  <ProtectedRoute>
+                    <UpdateUserProfile />
+                  </ProtectedRoute>
+                }
+              />
+
+
+              <Route
+                path="/me/upload_avatar"
+                element={
+                  <ProtectedRoute>
+                    <UploadAvatar />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/password/update"
+                element={
+                  <ProtectedRoute>
+                    <UpdatePassword />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route path="/password/forgot" element={<ForgotPassword />} />
+              <Route path="/password/reset/:token" element={<ResetPassword />} />
+
+              {/*  */}
+              <Route path="/cart" element={<Cart />} />
+
             </Routes>
           </div>
         </main>

@@ -3,13 +3,30 @@ import { useGetProductsDetailsQuery } from '../../redux/api/productApi.js';
 import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import ReactStars from 'react-rating-stars-component';
+import { useDispatch } from 'react-redux';
+import { setCartItem } from '../../redux/featurs/cartSlice.js';
 
 export default function ProductDetails() {
     const params = useParams();
+    const dispatch = useDispatch();
     const { data, error, isLoading } = useGetProductsDetailsQuery(params?.id);
     const product = data?.product;
 
+    const [quantity, setQuantity] = useState(1);
     const [activeImg, setActiveImg] = useState('/images/default_product.png');
+
+    const setItem = () => {
+        const cartItem = {
+            product: product?._id,
+            name: product?.name,
+            price: product?.price,
+            image: product?.images?.[0]?.url || "/images/default_product.png",
+            stock: product?.stock,
+            quantity
+        };
+        dispatch(setCartItem(cartItem));
+        toast.success("Added to cart");
+    };
 
     useEffect(() => {
         if (product?.images?.[0]?.url) {
@@ -26,14 +43,24 @@ export default function ProductDetails() {
         }
     }, [product, error]);
 
+    const increaseQty = () => {
+        if (quantity >= product.stock) return;
+        setQuantity(prev => prev + 1);
+    };
+
+    const decreaseQty = () => {
+        if (quantity <= 1) return;
+        setQuantity(prev => prev - 1);
+    };
+
     return (
         <div className="row d-flex justify-content-around">
             {/* Product Image Section */}
             <div className="col-12 col-lg-5 img-fluid" id="product_image">
                 <div className="p-3">
                     <img
-                        className="d-block w-100"
                         src={activeImg}
+                        onError={(e) => e.target.src = "/images/default_product.png"}
                         alt={product?.name || 'Product Image'}
                         width="340"
                         height="390"
@@ -51,7 +78,6 @@ export default function ProductDetails() {
                                 alt={`${product?.name} - ${index + 1}`}
                                 onClick={() => setActiveImg(img.url)}
                             />
-
                         </div>
                     ))}
                 </div>
@@ -85,20 +111,22 @@ export default function ProductDetails() {
 
                 {/* Quantity Controls */}
                 <div className="stockCounter d-inline">
-                    <span className="btn btn-danger minus">-</span>
+                    <span className="btn btn-danger minus" onClick={decreaseQty}>-</span>
                     <input
                         type="number"
                         className="form-control count d-inline"
-                        value="1"
+                        value={quantity}
                         readOnly
                     />
-                    <span className="btn btn-primary plus">+</span>
+                    <span className="btn btn-primary plus" onClick={increaseQty}>+</span>
                 </div>
 
                 <button
                     type="button"
                     id="cart_btn"
                     className="btn btn-primary d-inline ms-4"
+                    onClick={setItem}
+                    disabled={product?.stock <= 0}
                 >
                     Add to Cart
                 </button>
