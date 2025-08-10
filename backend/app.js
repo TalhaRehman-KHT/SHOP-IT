@@ -9,6 +9,7 @@ import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import cookieParser from 'cookie-parser';
 import cors from "cors";
+import paymentRouter from './routers/paymentRouter.js';
 
 
 // handle uncaught exception 
@@ -40,7 +41,12 @@ app.use(cors({
 }));
 
 // Middleware
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({
+    limit: "10mb",
+    verify: (req, res, buf) => {
+        req.rawBody = buf.toString();
+    }
+}));
 app.use(cookieParser());
 
 
@@ -52,6 +58,7 @@ connectDatabase();
 app.use('/api/v1', productRoutes);
 app.use('/api/v1', authRouter);
 app.use('/api/v1', orderRouter);
+app.use('/api/v1', paymentRouter);
 
 // ErrorMiddleware
 app.use(errorMiddleware)

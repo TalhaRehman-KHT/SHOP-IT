@@ -1,24 +1,28 @@
-import React from 'react'
-import MetaData from '../layout/MetaData'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import { setCartItem, removeCartItem } from '../../redux/featurs/cartSlice.js'
+import React from 'react';
+import MetaData from '../layout/MetaData';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { setCartItem, removeCartItem } from '../../redux/featurs/cartSlice.js';
+
 
 export default function Cart() {
-    const { cartItems } = useSelector((state) => state.cart)
-    const dispatch = useDispatch();
 
-    const increaseQty = (itemm, quantity) => {
-        const newQty = quantity + 1
-        if (newQty >= itemm.stock) return
-        setItem(itemm, newQty)
+
+    const { cartItems } = useSelector((state) => state.cart);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const increaseQty = (item, quantity) => {
+        const newQty = quantity + 1;
+        if (newQty > item.stock) return;
+        setItem(item, newQty);
     };
 
-    const decreaseQty = (itemm, quantity) => {
-        const newQty = quantity - 1
-        if (newQty <= 0) return
-        setItem(itemm, newQty)
+    const decreaseQty = (item, quantity) => {
+        const newQty = quantity - 1;
+        if (newQty <= 0) return;
+        setItem(item, newQty);
     };
 
     const setItem = (item, newQty) => {
@@ -26,17 +30,22 @@ export default function Cart() {
             product: item?.product,
             name: item?.name,
             price: item?.price,
-            image: item?.images?.[0]?.url || "/images/default_product.png",
+            image: item?.image || item?.images?.[0]?.url || "/images/default_product.png",
             stock: item?.stock,
             quantity: newQty
         };
         dispatch(setCartItem(cartItem));
-        toast.success("Added to cart");
+        toast.success("Cart updated");
     };
 
     const removeCartItemHandler = (id) => {
-        dispatch(removeCartItem(id))
-    }
+        dispatch(removeCartItem(id));
+        toast.info("Item removed from cart");
+    };
+
+    const checkOutHandler = () => {
+        navigate("/shipping");
+    };
 
     return (
         <>
@@ -95,7 +104,7 @@ export default function Cart() {
                                                 <i
                                                     id="delete_cart_item"
                                                     className="fa fa-trash btn btn-danger"
-                                                    onClick={() => removeCartItemHandler(item?.product)}
+                                                    onClick={() => removeCartItemHandler(item.product)}
                                                 ></i>
                                             </div>
                                         </div>
@@ -127,6 +136,7 @@ export default function Cart() {
                                 <button
                                     id="checkout_btn"
                                     className="btn btn-primary w-100"
+                                    onClick={checkOutHandler}
                                 >
                                     Check out
                                 </button>
@@ -136,5 +146,5 @@ export default function Cart() {
                 </>
             )}
         </>
-    )
+    );
 }
