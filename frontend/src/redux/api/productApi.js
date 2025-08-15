@@ -9,26 +9,48 @@ export const productApi = createApi({
     endpoints: (builder) => ({
         getProducts: builder.query({
             query: ({ page, keyword, min, max, category = [], ratings = [] }) => {
-                const params = new URLSearchParams();
+                const params = {};
 
-                if (page) params.append("page", page);
-                if (keyword) params.append("keyword", keyword);
-                if (min) params.append("price[gte]", min);
-                if (max) params.append("price[lte]", max);
+                if (page) params.page = page;
+                if (keyword) params.keyword = keyword;
+                if (min) params["price[gte]"] = min;
+                if (max) params["price[lte]"] = max;
 
-                category.forEach((cat) => params.append("category", cat));
-                ratings.forEach((r) => params.append("ratings", r));
+                category.forEach((cat, index) => {
+                    params[`category[${index}]`] = cat;
+                });
+                ratings.forEach((rate, index) => {
+                    params[`ratings[${index}]`] = rate;
+                });
 
                 return {
-                    url: `/products`,
+                    url: "/products",
                     params,
                 };
             },
         }),
-        getProductsDetails: builder.query({
+
+        getProductDetails: builder.query({
             query: (id) => `/products/${id}`,
+        }),
+
+        submitReview: builder.mutation({
+            query: (body) => ({
+                url: `/reviews`,
+                method: "PUT",
+                body,
+            }),
+        }),
+
+        canUserReview: builder.query({
+            query: (productId) => `/can_review/?productId=${productId}`,
         }),
     }),
 });
 
-export const { useGetProductsQuery, useGetProductsDetailsQuery } = productApi;
+export const {
+    useGetProductsQuery,
+    useGetProductDetailsQuery,
+    useSubmitReviewMutation,
+    useCanUserReviewQuery
+} = productApi;

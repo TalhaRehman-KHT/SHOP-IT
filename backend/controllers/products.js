@@ -4,6 +4,7 @@ import Product from "../models/produts.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncError from "../middleware/catchAsyncError.js";
 import ApiFilters from "../utils/apiFilters.js";
+import Order from "../models/order.js";
 
 // Get All Products  =>  GET /api/v1/products
 export const getAllProducts = catchAsyncError(async (req, res, next) => {
@@ -220,3 +221,23 @@ export const deleteProductReviews = catchAsyncError(async (req, res, next) => {
 });
 
 
+export const canUserReview = catchAsyncError(async (req, res, next) => {
+  const order = await Order.find({
+    user: req.user?.id,
+    "orderItems.product": req.query.productId,
+  });
+
+  // If no order found for this user & product, they can't review
+  if (order.length === 0) {
+    return res.status(200).json({
+      success: true,
+      canReview: false,
+    });
+  }
+
+  // If found, they can review
+  return res.status(200).json({
+    success: true,
+    canrReview: true,
+  });
+});

@@ -35,7 +35,7 @@ export default function PaymentMethod() {
         }
         if (isSuccess) {
             toast.success("Order placed successfully!");
-            navigate("/");
+            navigate("/me/orders?order_success=true");
         }
     }, [error, isSuccess, navigate]);
 

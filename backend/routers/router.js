@@ -12,7 +12,8 @@ import {
     createProductReviews,
     getProductReviews,
     deleteProductReviews,
-    
+    canUserReview,
+
 } from '../controllers/products.js';
 
 
@@ -32,17 +33,20 @@ router.get("/products/:id", getSingleProductsDetail);
 // only admin rout
 router.put("/admin/products/:id", isAuthticated, authorizedRole("admin"), updateProductById)
 // only admin rout
-router.delete("/admin/products/:id" , isAuthticated, authorizedRole("admin") , deleteProductById)
+router.delete("/admin/products/:id", isAuthticated, authorizedRole("admin"), deleteProductById)
 
 
 //
 
 router.put("/reviews", isAuthticated, createProductReviews)
 // 
-router.get("/reviews", isAuthticated, getProductReviews) 
+router.get("/reviews", isAuthticated, getProductReviews)
 
 // 
-router.delete("/admin/reviews" , isAuthticated,  deleteProductReviews) 
+router.delete("/admin/reviews", isAuthticated, deleteProductReviews)
+
+// 
+router.get("/can_review", isAuthticated, canUserReview)
 
 
 // Export router
