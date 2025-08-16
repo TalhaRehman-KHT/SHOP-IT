@@ -5,6 +5,7 @@ import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncError from "../middleware/catchAsyncError.js";
 import ApiFilters from "../utils/apiFilters.js";
 import Order from "../models/order.js";
+import { upload_file } from '../utils/cloudinary.js'
 
 // Get All Products  =>  GET /api/v1/products
 export const getAllProducts = catchAsyncError(async (req, res, next) => {
@@ -79,6 +80,19 @@ export const getSingleProductsDetail = catchAsyncError(async (req, res, next) =>
 });
 
 
+// 
+
+// Get  Product Admin  =>  GET products /api/v1/admin/products
+export const getAdminProducts = catchAsyncError(async (req, res, next) => {
+  const products = await Product.find();
+
+  res.status(200).json({
+    success: true,
+    products,
+  });
+});
+
+
 // Update Product by ID => PUT /api/v1/products/:id
 export const updateProductById = catchAsyncError(async (req, res, next) => {
   console.log("Update Request Received for Product ID:", req?.params?.id);
@@ -103,6 +117,47 @@ export const updateProductById = catchAsyncError(async (req, res, next) => {
   });
 });
 
+// Upload Product Images => /api/v1/admin/product/:id/upload_images
+export const uploadProductImages = catchAsyncError(async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    return next(new ErrorHandler("Product not found", 404));
+  }
+
+  if (!req.files || req.files.length === 0) {
+    return next(new ErrorHandler("Please provide images", 400));
+  }
+
+  // Convert buffer → base64 and upload to Cloudinary
+  const uploader = async (fileBuffer) => {
+    return new Promise((resolve, reject) => {
+      const fileStr = `data:${fileBuffer.mimetype};base64,${fileBuffer.buffer.toString("base64")}`;
+      cloudinary.uploader.upload(
+        fileStr,
+        { folder: "shopIt/products" },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve({
+            public_id: result.public_id,
+            url: result.secure_url,
+          });
+        }
+      );
+    });
+  };
+
+  const urls = await Promise.all(req.files.map((file) => uploader(file)));
+
+  product.images.push(...urls);
+  await product.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Images uploaded successfully",
+    product,
+  });
+});
 
 // delate by id path /api/v1/products/:id
 

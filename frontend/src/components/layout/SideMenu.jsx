@@ -1,29 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-export default function SideMenu() {
-    const menuItem = [
-        {
-            name: "Profile",
-            url: "/me/profile",
-            icon: "fas fa-user"
-        },
-        {
-            name: "Update",
-            url: "/me/update_profile",
-            icon: "fas fa-shopping-basket"
-        },
-        {
-            name: "Update Avatar",
-            url: "/me/upload_avatar",
-            icon: "fas fa-cog"
-        },
-        {
-            name: "Update Password",
-            url: "/password/update",
-            icon: "fas fa-cog"
-        },
-    ];
+export default function SideMenu({ menuItem }) {
+
 
     const location = useLocation();
     const [activeMenuItem, setActiveMenuItem] = useState(location.pathname);

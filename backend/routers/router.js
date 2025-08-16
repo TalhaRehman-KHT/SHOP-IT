@@ -13,6 +13,8 @@ import {
     getProductReviews,
     deleteProductReviews,
     canUserReview,
+    getAdminProducts,
+    uploadProductImages,
 
 } from '../controllers/products.js';
 
@@ -27,11 +29,26 @@ router.get('/products', getAllProducts);
 //  only admin rout
 router.post("/admin/product", isAuthticated, authorizedRole("admin"), createProduct);
 
+// 
+// routes/adminRoutes.js
+// routes/adminRoutes.js
+router.put(
+    "/admin/product/:id/upload_images",
+    isAuthticated,
+    authorizedRole("admin"),
+    uploadProductImages
+);
+
+
+
+//  only admin rout
+router.get("/admin/products", isAuthticated, authorizedRole("admin"), getAdminProducts);
+
 // public rout
 router.get("/products/:id", getSingleProductsDetail);
 
 // only admin rout
-router.put("/admin/products/:id", isAuthticated, authorizedRole("admin"), updateProductById)
+router.put("/admin/product/:id", isAuthticated, authorizedRole("admin"), updateProductById)
 // only admin rout
 router.delete("/admin/products/:id", isAuthticated, authorizedRole("admin"), deleteProductById)
 

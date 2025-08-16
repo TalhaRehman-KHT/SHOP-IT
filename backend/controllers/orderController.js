@@ -57,7 +57,7 @@ export const getOrderDetail = catchAsyncError(async (req, res, next) => {
 
 // Get Current User's Orders ==> GET /api/v1/me/orders
 export const myOrders = catchAsyncError(async (req, res, next) => {
-  const orders = await Order.find({ user: req.user._id }).populate("user" , " name email");
+  const orders = await Order.find({ user: req.user._id }).populate("user", " name email");
 
   res.status(200).json({
     success: true,
@@ -73,7 +73,7 @@ export const adminOrders = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     success: true,
     orders,
-    message:"Admin Getting All Orders"
+    message: "Admin Getting All Orders"
   });
 });
 
@@ -128,10 +128,95 @@ export const adminDeleteOrder = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler(`Order not found with id: ${req.params.id}`, 404));
   }
 
-  await order.deleteOne(); 
+  await order.deleteOne();
 
   res.status(200).json({
     success: true,
     message: "Order successfully deleted"
+  });
+});
+
+// 
+// 
+// 
+
+// helper function to fetch sales data
+async function getSalesData(startDate, endDate) {
+  const salesData = await Order.aggregate([
+    {
+      // stage 1: filter results
+      $match: {
+        createdAt: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        },
+      },
+    },
+    {
+      // stage 2: group by formatted date
+      $group: {
+        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+        totalSales: { $sum: "$totalAmount" }, // ✅ must prefix with $
+        numOrders: { $sum: 1 }, // ✅ count orders
+      },
+    },
+    {
+      // optional: sort by date
+      $sort: { _id: 1 },
+    },
+  ]);
+
+  // convert to Map (optional)
+  const salesMap = new Map();
+  let totalSales = 0;
+  let totalNumOrders = 0;
+
+  salesData.forEach((entry) => {
+    const date = entry._id; // already a string like "2025-08-16"
+    const sales = entry.totalSales;
+    const numOrders = entry.numOrders;
+
+    salesMap.set(date, { sales, numOrders });
+
+    totalSales += sales;
+    totalNumOrders += numOrders;
+  });
+
+  return { salesMap, totalSales, totalNumOrders, salesData };
+}
+
+// generate an array of dates between start and end
+function getDatesBetween(startDate, endDate) {
+  const dates = [];
+  let currentDate = new Date(startDate);
+
+  while (currentDate <= new Date(endDate)) {
+    const formattedDate = currentDate.toISOString().split("T")[0]; // ✅ YYYY-MM-DD
+    dates.push(formattedDate);
+
+    // move to next day
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dates;
+}
+
+// Controller: /api/v1/admin/getsale
+export const getSales = catchAsyncError(async (req, res, next) => {
+  const startDate = new Date(req?.query.startDate);
+  const endDate = new Date(req?.query.endDate);
+
+  // normalize time range
+  startDate.setHours(0, 0, 0, 0);
+  endDate.setHours(23, 59, 59, 999);
+
+  const { salesMap, totalSales, totalNumOrders, salesData } =
+    await getSalesData(startDate, endDate);
+
+  res.status(200).json({
+    success: true,
+    totalSales,
+    totalNumOrders,
+    salesByDate: salesData, // grouped sales per day
+    allDates: getDatesBetween(startDate, endDate), // useful for chart
   });
 });

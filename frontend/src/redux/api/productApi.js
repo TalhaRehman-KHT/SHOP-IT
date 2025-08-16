@@ -6,7 +6,10 @@ export const productApi = createApi({
         baseUrl: "http://localhost:4000/api/v1",
         credentials: "include",
     }),
+    tagTypes: ["Product", "AdminProducts"],
+
     endpoints: (builder) => ({
+        // 🛒 Get all products (with filters/pagination)
         getProducts: builder.query({
             query: ({ page, keyword, min, max, category = [], ratings = [] }) => {
                 const params = {};
@@ -30,10 +33,12 @@ export const productApi = createApi({
             },
         }),
 
+        // 📄 Get single product details
         getProductDetails: builder.query({
             query: (id) => `/products/${id}`,
         }),
 
+        // ✍️ Submit review
         submitReview: builder.mutation({
             query: (body) => ({
                 url: `/reviews`,
@@ -42,15 +47,58 @@ export const productApi = createApi({
             }),
         }),
 
+        // ✅ FIXED: Create new product (correct spelling + correct endpoint)
+        createProduct: builder.mutation({
+            query: (body) => ({
+                url: `/admin/product`, // <-- must match backend route
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: ["AdminProducts"],
+        }),
+        // 
+        // productApi.js
+
+        updateProduct: builder.mutation({
+            query: ({ id, body }) => ({
+                url: `/admin/product/${id}`,
+                method: "PUT",
+                body,
+            }),
+            invalidatesTags: ["AdminProducts", "Product"],
+        }),
+        // 
+
+        uploadProductImages: builder.mutation({
+            query: ({ id, body }) => ({
+                url: `/admin/product/${id}/upload_images`,
+                method: "PUT",
+                body,
+            }),
+            invalidatesTags: ["Product"],
+        }),
+
+        // ⭐ Check if user can review
         canUserReview: builder.query({
             query: (productId) => `/can_review/?productId=${productId}`,
+        }),
+
+        // 👨‍💼 Get all admin products
+        getAdminProducts: builder.query({
+            query: () => `/admin/products`,
+            providesTags: ["AdminProducts"],
         }),
     }),
 });
 
+// ✅ Updated export names (note `useCreateProductMutation` now exists)
 export const {
     useGetProductsQuery,
+    useUploadProductImagesMutation,
+    useCreateProductMutation,
+    useGetAdminProductsQuery,
     useGetProductDetailsQuery,
     useSubmitReviewMutation,
-    useCanUserReviewQuery
+    useCanUserReviewQuery,
+    useUpdateProductMutation
 } = productApi;
