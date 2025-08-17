@@ -5,6 +5,7 @@ import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncError from "../middleware/catchAsyncError.js";
 import ApiFilters from "../utils/apiFilters.js";
 import Order from "../models/order.js";
+import cloudinary from "cloudinary"
 import { upload_file } from '../utils/cloudinary.js'
 
 // Get All Products  =>  GET /api/v1/products
@@ -93,29 +94,98 @@ export const getAdminProducts = catchAsyncError(async (req, res, next) => {
 });
 
 
-// Update Product by ID => PUT /api/v1/products/:id
-export const updateProductById = catchAsyncError(async (req, res, next) => {
-  console.log("Update Request Received for Product ID:", req?.params?.id);
-  console.log("Update Data:", req.body);
+// // Update Product by ID => PUT /api/v1/products/:id
+// export const updateProductById = catchAsyncError(async (req, res, next) => {
+//   console.log("Update Request Received for Product ID:", req?.params?.id);
+//   console.log("Update Data:", req.body);
 
-  let product = await Product.findById(req?.params?.id);
+//   let product = await Product.findById(req?.params?.id);
 
-  if (!product) {
-    return next(new ErrorHandler("Product not found", 404));
+//   if (!product) {
+//     return next(new ErrorHandler("Product not found", 404));
+//   }
+
+//   product = await Product.findByIdAndUpdate(req?.params?.id, req.body, {
+//     new: true,
+//     runValidators: true,
+//   })
+
+//   console.log("Product successfully updated:", product);
+
+//   res.status(200).json({
+//     success: true,
+//     product,
+//   });
+// });
+
+// // Upload Product Images => /api/v1/admin/product/:id/upload_images
+// export const uploadProductImages = catchAsyncError(async (req, res, next) => {
+//   const product = await Product.findById(req.params.id);
+
+//   if (!product) {
+//     return next(new ErrorHandler("Product not found", 404));
+//   }
+
+//   if (!req.files || req.files.length === 0) {
+//     return next(new ErrorHandler("Please provide images", 400));
+//   }
+
+//   // Upload images to Cloudinary
+//   const uploader = async (file) => {
+//     return new Promise((resolve, reject) => {
+//       const fileStr = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+//       cloudinary.uploader.upload(
+//         fileStr,
+//         { folder: "ShopIt/products" },
+//         (error, result) => {
+//           if (error) return reject(error);
+//           resolve({
+//             public_id: result.public_id,
+//             url: result.secure_url,
+//           });
+//         }
+//       );
+//     });
+//   };
+
+//   // Upload all selected files
+//   const uploadedImgs = await Promise.all(req.files.map((file) => uploader(file)));
+
+//   // Save in DB
+//   product.images.push(...uploadedImgs);
+//   await product.save();
+
+//   res.status(200).json({
+//     success: true,
+//     message: "Images uploaded successfully",
+//     images: product.images,
+//   });
+// });
+// controllers/products.js
+// import Product from "../models/product.js";
+
+// Update Product by ID
+export const updateProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    // Update product fields
+    product = await Product.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({ success: true, product });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
+};
 
-  product = await Product.findByIdAndUpdate(req?.params?.id, req.body, {
-    new: true,
-    runValidators: true,
-  })
-
-  console.log("Product successfully updated:", product);
-
-  res.status(200).json({
-    success: true,
-    product,
-  });
-});
 
 // Upload Product Images => /api/v1/admin/product/:id/upload_images
 export const uploadProductImages = catchAsyncError(async (req, res, next) => {
@@ -129,33 +199,30 @@ export const uploadProductImages = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Please provide images", 400));
   }
 
-  // Convert buffer → base64 and upload to Cloudinary
-  const uploader = async (fileBuffer) => {
-    return new Promise((resolve, reject) => {
-      const fileStr = `data:${fileBuffer.mimetype};base64,${fileBuffer.buffer.toString("base64")}`;
-      cloudinary.uploader.upload(
-        fileStr,
-        { folder: "shopIt/products" },
-        (error, result) => {
-          if (error) return reject(error);
-          resolve({
-            public_id: result.public_id,
-            url: result.secure_url,
-          });
-        }
-      );
+  // Upload function
+  const uploader = async (file) => {
+    const fileStr = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+    const result = await cloudinary.v2.uploader.upload(fileStr, {
+      folder: "shopIt/products", // ✅ folder name
     });
+
+    return {
+      public_id: result.public_id,
+      url: result.secure_url,
+    };
   };
 
-  const urls = await Promise.all(req.files.map((file) => uploader(file)));
+  // Upload all files to Cloudinary
+  const uploadedImgs = await Promise.all(req.files.map((file) => uploader(file)));
 
-  product.images.push(...urls);
+  // Save in DB
+  product.images.push(...uploadedImgs);
   await product.save();
 
   res.status(200).json({
     success: true,
     message: "Images uploaded successfully",
-    product,
+    images: product.images,
   });
 });
 

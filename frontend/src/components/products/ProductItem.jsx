@@ -12,7 +12,14 @@ export default function ProductItem({ product }) {
       <div className="card p-3 rounded">
         <img
           className="card-img-top mx-auto"
-          src={product?.image?.[0]?.url || "/images/default_product.png"}
+          // src={product?.image?.[0] || "/images/default_product.png"}
+          src={
+            product?.images?.[0]?.url ||   // case: [{ url: "..." }]
+            product?.images?.[0] ||        // case: ["..."]
+            product?.image?.[0]?.url ||    // case: { image: [{ url: "..." }] }
+            product?.image?.[0] ||         // case: { image: ["..."] }
+            "/images/default_product.png"
+          }
           alt={product?.name}
         />
         <div className="card-body ps-3 d-flex justify-content-center flex-column">

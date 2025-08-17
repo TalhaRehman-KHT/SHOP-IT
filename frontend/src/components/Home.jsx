@@ -62,7 +62,14 @@ export default function Home() {
                         <section id="products" className="mt-5">
                             <div className="row">
                                 {data?.products?.map((product) => (
-                                    <ProductItem key={product._id} product={product} />
+                                    // <ProductItem key={product._id} product={product} />
+                                    <ProductItem
+                                        key={product._id}
+                                        product={{
+                                            ...product,
+                                            imageUrl: product?.images?.[0]?.url || product?.images?.[0] || "/images/default_product.png"
+                                        }}
+                                    />
                                 ))}
                             </div>
                         </section>

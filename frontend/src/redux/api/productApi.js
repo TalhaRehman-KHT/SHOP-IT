@@ -69,6 +69,7 @@ export const productApi = createApi({
         }),
         // 
 
+        // redux/api/productApi.js
         uploadProductImages: builder.mutation({
             query: ({ id, body }) => ({
                 url: `/admin/product/${id}/upload_images`,
@@ -77,6 +78,7 @@ export const productApi = createApi({
             }),
             invalidatesTags: ["Product"],
         }),
+
 
         // ⭐ Check if user can review
         canUserReview: builder.query({

@@ -3,6 +3,9 @@
 import express from 'express';
 import { isAuthticated } from '../middleware/Authtication.js';
 import { authorizedRole } from '../middleware/Authtication.js';
+import upload from '../utils/mutler.js';
+
+
 import {
     createProduct,
     getAllProducts,
@@ -31,11 +34,11 @@ router.post("/admin/product", isAuthticated, authorizedRole("admin"), createProd
 
 // 
 // routes/adminRoutes.js
-// routes/adminRoutes.js
 router.put(
     "/admin/product/:id/upload_images",
     isAuthticated,
     authorizedRole("admin"),
+    upload.array("images"),   // ✅ must match frontend FormData
     uploadProductImages
 );
 

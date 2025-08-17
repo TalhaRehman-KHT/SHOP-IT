@@ -60,7 +60,8 @@ export default function UploadImages() {
 
         try {
             const formData = new FormData();
-            images.forEach((img) => formData.append("images", img)); // ✅ field name matches multer
+            images.forEach((img) => formData.append("images", img)); // ✅ matches multer
+            // ✅ must match backend
 
             await uploadImages({ id: params?.id, body: formData }).unwrap();
 
@@ -70,7 +71,6 @@ export default function UploadImages() {
             toast.error(err?.data?.message || "Image upload failed");
         }
     };
-
 
     return (
         <AdminLayout>
@@ -91,7 +91,7 @@ export default function UploadImages() {
                             <input
                                 ref={fileInputRef}
                                 type="file"
-                                name="product_images"
+                                name="images"   // ✅ fixed name
                                 className="form-control"
                                 id="customFile"
                                 multiple
