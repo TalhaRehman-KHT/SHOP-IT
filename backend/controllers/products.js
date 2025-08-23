@@ -162,7 +162,7 @@ export const getAdminProducts = catchAsyncError(async (req, res, next) => {
 //   });
 // });
 // controllers/products.js
-// import Product from "../models/product.js";
+// 
 
 // Update Product by ID
 export const updateProductById = async (req, res) => {
