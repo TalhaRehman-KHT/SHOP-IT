@@ -9,6 +9,7 @@ export const getPriceQueryParams = (searchParams, key, value) => {
 
     return newParams;
 };
+<<<<<<< HEAD
 
 
 export const calculatorOrderCost = (cartItems) => {
@@ -30,3 +31,5 @@ export const calculatorOrderCost = (cartItems) => {
         totalPrice
     };
 };
+=======
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12

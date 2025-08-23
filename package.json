@@ -15,7 +15,10 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
     "bcryptjs": "^3.0.2",
+<<<<<<< HEAD
     "cloudinary": "^2.7.0",
+=======
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -23,9 +26,13 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.4",
+<<<<<<< HEAD
     "multer": "^2.0.2",
     "nodemailer": "^7.0.5",
     "stripe": "^18.4.0"
+=======
+    "nodemailer": "^7.0.5"
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

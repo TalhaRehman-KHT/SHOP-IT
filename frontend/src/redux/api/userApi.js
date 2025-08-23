@@ -1,15 +1,24 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setUser, setIsAuthenticated } from "../featurs/userSlice";
 
+<<<<<<< HEAD
 
 
+=======
+// Define the API
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
 export const userApi = createApi({
     reducerPath: "userApi",
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:4000/api/v1",
+<<<<<<< HEAD
         credentials: "include", // to send cookies
     }),
     tagTypes: ["User"], // Declare tag for cache invalidation
+=======
+        credentials: "include", // Enable cookie sharing
+    }),
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
     endpoints: (builder) => ({
         // GET /me
         getMe: builder.query({
@@ -27,6 +36,7 @@ export const userApi = createApi({
                     console.error("User fetch failed:", error);
                 }
             },
+<<<<<<< HEAD
             providesTags: ["User"],
         }),
 
@@ -83,3 +93,11 @@ export const userApi = createApi({
 
 // Export hooks
 export const { useGetMeQuery, useUpdateProfileMutation, useUploadAvatarMutation, useUpdatePasswordMutation, useForgotPasswordMutation, useResetPasswordMutation } = userApi;
+=======
+        }),
+    }),
+});
+
+// Hook
+export const { useGetMeQuery } = userApi;
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12

@@ -4,9 +4,12 @@ import Product from "../models/produts.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncError from "../middleware/catchAsyncError.js";
 import ApiFilters from "../utils/apiFilters.js";
+<<<<<<< HEAD
 import Order from "../models/order.js";
 import cloudinary from "cloudinary"
 import { upload_file } from '../utils/cloudinary.js'
+=======
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
 
 // Get All Products  =>  GET /api/v1/products
 export const getAllProducts = catchAsyncError(async (req, res, next) => {
@@ -81,6 +84,7 @@ export const getSingleProductsDetail = catchAsyncError(async (req, res, next) =>
 });
 
 
+<<<<<<< HEAD
 // 
 
 // Get  Product Admin  =>  GET products /api/v1/admin/products
@@ -190,11 +194,20 @@ export const updateProductById = async (req, res) => {
 // Upload Product Images => /api/v1/admin/product/:id/upload_images
 export const uploadProductImages = catchAsyncError(async (req, res, next) => {
   const product = await Product.findById(req.params.id);
+=======
+// Update Product by ID => PUT /api/v1/products/:id
+export const updateProductById = catchAsyncError(async (req, res, next) => {
+  console.log("Update Request Received for Product ID:", req?.params?.id);
+  console.log("Update Data:", req.body);
+
+  let product = await Product.findById(req?.params?.id);
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
 
   if (!product) {
     return next(new ErrorHandler("Product not found", 404));
   }
 
+<<<<<<< HEAD
   if (!req.files || req.files.length === 0) {
     return next(new ErrorHandler("Please provide images", 400));
   }
@@ -226,6 +239,22 @@ export const uploadProductImages = catchAsyncError(async (req, res, next) => {
   });
 });
 
+=======
+  product = await Product.findByIdAndUpdate(req?.params?.id, req.body, {
+    new: true,
+    runValidators: true,
+  })
+
+  console.log("Product successfully updated:", product);
+
+  res.status(200).json({
+    success: true,
+    product,
+  });
+});
+
+
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
 // delate by id path /api/v1/products/:id
 
 // Delete Product by ID => DELETE /api/v1/products/:id
@@ -343,6 +372,7 @@ export const deleteProductReviews = catchAsyncError(async (req, res, next) => {
 });
 
 
+<<<<<<< HEAD
 export const canUserReview = catchAsyncError(async (req, res, next) => {
   const order = await Order.find({
     user: req.user?.id,
@@ -363,3 +393,5 @@ export const canUserReview = catchAsyncError(async (req, res, next) => {
     canrReview: true,
   });
 });
+=======
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
