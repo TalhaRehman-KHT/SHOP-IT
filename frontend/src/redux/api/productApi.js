@@ -6,6 +6,7 @@ export const productApi = createApi({
         baseUrl: "http://localhost:4000/api/v1",
         credentials: "include",
     }),
+<<<<<<< HEAD
     tagTypes: ["Product", "AdminProducts"],
 
     endpoints: (builder) => ({
@@ -28,10 +29,28 @@ export const productApi = createApi({
 
                 return {
                     url: "/products",
+=======
+    endpoints: (builder) => ({
+        getProducts: builder.query({
+            query: ({ page, keyword, min, max, category = [], ratings = [] }) => {
+                const params = new URLSearchParams();
+
+                if (page) params.append("page", page);
+                if (keyword) params.append("keyword", keyword);
+                if (min) params.append("price[gte]", min);
+                if (max) params.append("price[lte]", max);
+
+                category.forEach((cat) => params.append("category", cat));
+                ratings.forEach((r) => params.append("ratings", r));
+
+                return {
+                    url: `/products`,
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
                     params,
                 };
             },
         }),
+<<<<<<< HEAD
 
         // 📄 Get single product details
         getProductDetails: builder.query({
@@ -104,3 +123,12 @@ export const {
     useCanUserReviewQuery,
     useUpdateProductMutation
 } = productApi;
+=======
+        getProductsDetails: builder.query({
+            query: (id) => `/products/${id}`,
+        }),
+    }),
+});
+
+export const { useGetProductsQuery, useGetProductsDetailsQuery } = productApi;
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12

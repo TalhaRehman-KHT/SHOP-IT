@@ -57,7 +57,11 @@ export const getOrderDetail = catchAsyncError(async (req, res, next) => {
 
 // Get Current User's Orders ==> GET /api/v1/me/orders
 export const myOrders = catchAsyncError(async (req, res, next) => {
+<<<<<<< HEAD
   const orders = await Order.find({ user: req.user._id }).populate("user", " name email");
+=======
+  const orders = await Order.find({ user: req.user._id }).populate("user" , " name email");
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
 
   res.status(200).json({
     success: true,
@@ -73,7 +77,11 @@ export const adminOrders = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     success: true,
     orders,
+<<<<<<< HEAD
     message: "Admin Getting All Orders"
+=======
+    message:"Admin Getting All Orders"
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
   });
 });
 
@@ -128,13 +136,18 @@ export const adminDeleteOrder = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler(`Order not found with id: ${req.params.id}`, 404));
   }
 
+<<<<<<< HEAD
   await order.deleteOne();
+=======
+  await order.deleteOne(); 
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
 
   res.status(200).json({
     success: true,
     message: "Order successfully deleted"
   });
 });
+<<<<<<< HEAD
 
 // 
 // 
@@ -220,3 +233,5 @@ export const getSales = catchAsyncError(async (req, res, next) => {
     allDates: getDatesBetween(startDate, endDate), // useful for chart
   });
 });
+=======
+>>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
