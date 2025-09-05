@@ -62,7 +62,6 @@ export default function Home() {
                         <section id="products" className="mt-5">
                             <div className="row">
                                 {data?.products?.map((product) => (
-<<<<<<< HEAD
                                     // <ProductItem key={product._id} product={product} />
                                     <ProductItem
                                         key={product._id}
@@ -71,9 +70,6 @@ export default function Home() {
                                             imageUrl: product?.images?.[0]?.url || product?.images?.[0] || "/images/default_product.png"
                                         }}
                                     />
-=======
-                                    <ProductItem key={product._id} product={product} />
->>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
                                 ))}
                             </div>
                         </section>

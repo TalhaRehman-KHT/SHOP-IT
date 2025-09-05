@@ -5,10 +5,7 @@ import { getResetPasswordTemplate } from "../utils/emailTemplates.js";
 import ErrorHandler from '../utils/errorHandler.js'
 import sendToken from "../utils/setToken.js"
 import sendEmail from "../utils/sendEmail.js";
-<<<<<<< HEAD
 import { delete_file, upload_file } from "../utils/cloudinary.js";
-=======
->>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
 
 
 //  registerUser path /api/v1/register
@@ -75,7 +72,6 @@ export const logOut = catchAsyncError(async (req, res, next) => {
 });
 
 
-<<<<<<< HEAD
 
 // upload avatar path: /api/v1/me/upload_avatar
 export const uploadAvatar = catchAsyncError(async (req, res, next) => {
@@ -98,8 +94,6 @@ export const uploadAvatar = catchAsyncError(async (req, res, next) => {
 
 
 
-=======
->>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
 // Forgot Password route: /api/v1/forgot/password
 export const forgotPassword = catchAsyncError(async (req, res, next) => {
   const { email } = req.body;
@@ -218,11 +212,8 @@ export const updatePassword = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Old Password is incorrect", 400));
   }
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 4354a0232f468d175a7f82fdd94a9b462744fe12
   // Set new password
   user.password = req.body.password;
 

@@ -3,6 +3,8 @@ import { useGetAdminProductsQuery } from "../../redux/api/productApi.js";
 import Loader from "../layout/Loader.jsx";
 import toast from "react-hot-toast";
 import { MDBDataTable } from "mdbreact";
+//import { MDBDataTable } from 'mdb-react-ui-kit';
+
 import { Link, useNavigate } from "react-router-dom";
 import AdminLayout from "../layout/AdminLayout.jsx";
 

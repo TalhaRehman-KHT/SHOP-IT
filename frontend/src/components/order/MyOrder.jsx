@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useMyOrdersQuery } from '../../redux/api/orderApi.js';
 import Loader from '../layout/Loader.jsx';
 import toast from 'react-hot-toast';
-import { MDBDataTable } from 'mdbreact';
+//import { MDBDataTable } from 'mdbreact';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { clearCart } from '../../redux/featurs/cartSlice.js';
